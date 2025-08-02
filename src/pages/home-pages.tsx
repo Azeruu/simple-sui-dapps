@@ -16,8 +16,8 @@ export function HomePage() {
             transition={{ duration: 0.3 }}
         >
             <div className="text-center py-20 pb-10">
-                <h2 className="text-4xl font-bold text-white py-4">Choose Your Collection</h2>
-                <p className="text-blue-300 text-lg">Select from our exclusive NFT collections</p>
+                <h2 className="text-4xl font-bold text-amber-900 py-4 drop-shadow-sm">Choose Your Collection</h2>
+                <p className="text-amber-800 text-lg font-medium">Select from our exclusive NFT collections</p>
             </div>
             <div className="grid md:grid-cols-2 gap-8 px-4 sm:px-10 md:px-20 py-5 -mt-10">
                 {Object.entries(collections).map(([_,id]) => (

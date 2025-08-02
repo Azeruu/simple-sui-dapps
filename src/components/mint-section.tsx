@@ -8,13 +8,17 @@ import { Button } from "./ui/button";
 import { CollectionInfo } from "@/hooks/use-get-collection-info";
 import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 import { formatSUI } from "@/lib/utils";
+import { motion } from "framer-motion";
+import { Sparkles, Upload, X, Coins } from "lucide-react";
 
 function MintForm({
   collectionId,
   mintPrice,
+  onSuccess,
 }: {
   collectionId: string;
   mintPrice: number;
+  onSuccess: () => void;
 }) {
   const { isPending: isLoading, mutate } = useCreateMintTransaction();
   const [formData, setFormData] = useState<CreateMintTransactionDto>({
@@ -108,6 +112,11 @@ function MintForm({
           collectionId: collectionId,
         });
         setImagePreview(null);
+        
+        // Close dialog after successful mint
+        setTimeout(() => {
+          onSuccess();
+        }, 1000); // Small delay to show success state
       },
     ]);
   };
@@ -124,12 +133,12 @@ function MintForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 flex gap-4">
-      <div className="flex flex-col gap-4">
+    <form onSubmit={handleSubmit} className="space-y-6 flex gap-6">
+      <div className="flex flex-col gap-6 flex-1">
         <div>
           <label
             htmlFor="name"
-            className="block text-sm font-medium text-[#bac2de] mb-2"
+            className="block text-sm font-medium text-amber-900 mb-3"
           >
             NFT Name *
           </label>
@@ -139,19 +148,22 @@ function MintForm({
             placeholder="e.g., Cosmic Cat Supreme"
             value={formData.name}
             onChange={(e) => handleInputChange("name", e.target.value)}
-            className={`bg-[#313244] border-[#45475a] text-[#cdd6f4] placeholder:text-[#6c7086] ${
-              errors.name ? "border-[#f38ba8]" : "focus:border-[#cba6f7]"
+            className={`bg-amber-50/30 backdrop-blur-md border-amber-300/30 text-amber-900 placeholder:text-amber-600/60 focus:border-amber-500/70 focus:ring-amber-500/20 ${
+              errors.name ? "border-red-400/50 focus:border-red-400/50" : ""
             }`}
           />
           {errors.name && (
-            <p className="text-[#f38ba8] text-sm mt-1">{errors.name}</p>
+            <p className="text-red-600 text-sm mt-2 flex items-center gap-1">
+              <X className="w-4 h-4" />
+              {errors.name}
+            </p>
           )}
         </div>
 
         <div>
           <label
             htmlFor="description"
-            className="block text-sm font-medium text-[#bac2de] mb-2"
+            className="block text-sm font-medium text-amber-900 mb-3"
           >
             Description *
           </label>
@@ -160,28 +172,37 @@ function MintForm({
             placeholder="Describe your unique cat's personality and traits..."
             value={formData.description}
             onChange={(e) => handleInputChange("description", e.target.value)}
-            rows={3}
-            className={`w-full px-3 py-2 bg-[#313244] border rounded-md text-[#cdd6f4] placeholder:text-[#6c7086] resize-none focus:outline-none focus:ring-2 focus:ring-[#cba6f7]/50 ${
+            rows={4}
+            className={`w-full px-4 py-3 bg-amber-50/30 backdrop-blur-md border border-amber-300/30 rounded-xl text-amber-900 placeholder:text-amber-600/60 resize-none focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500/70 transition-all duration-300 ${
               errors.description
-                ? "border-[#f38ba8]"
-                : "border-[#45475a] focus:border-[#cba6f7]"
+                ? "border-red-400/50 focus:border-red-400/50"
+                : ""
             }`}
           />
           {errors.description && (
-            <p className="text-[#f38ba8] text-sm mt-1">{errors.description}</p>
+            <p className="text-red-600 text-sm mt-2 flex items-center gap-1">
+              <X className="w-4 h-4" />
+              {errors.description}
+            </p>
           )}
         </div>
 
-        <div className="bg-[#45475a]/30 rounded-lg p-4 mt-6">
+        <div className="bg-gradient-to-r from-amber-200/20 to-orange-200/20 backdrop-blur-md border border-amber-300/30 rounded-2xl p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 bg-amber-500/20 rounded-lg">
+              <Coins className="w-5 h-5 text-amber-700" />
+            </div>
+            <span className="text-amber-900 font-medium">Total Cost</span>
+          </div>
           <div className="flex justify-between items-center mb-2">
-            <span className="text-[#a6adc8]">Total Cost</span>
-            <span className="text-xl font-bold text-[#f9e2af]">
+            <span className="text-amber-700 text-sm">Mint Price</span>
+            <span className="text-2xl font-bold text-amber-950">
               {formatSUI(mintPrice)} SUI
             </span>
           </div>
           <div className="flex justify-between items-center text-sm">
-            <span className="text-[#6c7086]">+ Gas fees</span>
-            <span className="text-[#94e2d5]">~0.005 SUI</span>
+            <span className="text-amber-600">+ Gas fees (estimated)</span>
+            <span className="text-amber-800 font-medium">~0.005 SUI</span>
           </div>
         </div>
 
@@ -189,33 +210,36 @@ function MintForm({
           id="mint-button"
           type="submit"
           disabled={isLoading}
-          className="w-full bg-gradient-to-r from-[#cba6f7] to-[#f38ba8] hover:from-[#b4a0e8] hover:to-[#f27a9a] text-[#11111b] font-semibold py-3 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold py-4 text-lg rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isLoading ? (
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 border-2 border-[#11111b]/30 border-t-[#11111b] rounded-full animate-spin"></div>
+            <div className="flex items-center gap-3">
+              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
               Minting...
             </div>
           ) : (
-            `Mint NFT for ${formatSUI(mintPrice)} SUI`
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5" />
+              Mint NFT for {formatSUI(mintPrice)} SUI
+            </div>
           )}
         </Button>
       </div>
 
-      <div>
+      <div className="flex-1">
         <label
           htmlFor="imageFile"
-          className="block text-sm font-medium text-[#bac2de] mb-2"
+          className="block text-sm font-medium text-amber-900 mb-3"
         >
           NFT Image *
         </label>
-        <div className="space-y-3 aspect-[9/16] flex max-h-96">
+        <div className="space-y-4 aspect-[9/16] flex max-h-96">
           {imagePreview ? (
-            <div className="relative">
+            <div className="relative w-full">
               <img
                 src={imagePreview || "/placeholder.svg"}
                 alt="Preview"
-                className="w-full h-full object-cover rounded-lg border border-[#45475a]"
+                className="w-full h-full object-cover rounded-2xl border-2 border-amber-300/30 shadow-lg"
               />
               <button
                 type="button"
@@ -223,17 +247,17 @@ function MintForm({
                   setFormData((prev) => ({ ...prev, imageFile: null }));
                   setImagePreview(null);
                 }}
-                className="absolute top-2 right-2 w-8 h-8 bg-[#f38ba8] hover:bg-[#f27a9a] text-[#11111b] rounded-full flex items-center justify-center transition-colors"
+                className="absolute top-3 right-3 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-all duration-300 shadow-lg"
               >
-                ✕
+                <X className="w-4 h-4" />
               </button>
             </div>
           ) : (
             <div
-              className={`relative border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+              className={`relative border-2 border-dashed rounded-2xl p-8 text-center transition-all duration-300 w-full ${
                 errors.imageFile
-                  ? "border-[#f38ba8]"
-                  : "border-[#45475a] hover:border-[#cba6f7]"
+                  ? "border-red-400/50 bg-red-100/10"
+                  : "border-amber-300/30 hover:border-amber-500/70 hover:bg-amber-50/20"
               }`}
             >
               <input
@@ -243,17 +267,17 @@ function MintForm({
                 onChange={handleFileChange}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               />
-              <div className="space-y-2">
-                <div className="w-12 h-12 mx-auto bg-[#45475a] rounded-lg flex items-center justify-center">
-                  <span className="text-2xl">📁</span>
+              <div className="space-y-4">
+                <div className="w-16 h-16 mx-auto bg-gradient-to-br from-amber-200/30 to-orange-200/30 rounded-2xl flex items-center justify-center border border-amber-300/30">
+                  <Upload className="w-8 h-8 text-amber-700" />
                 </div>
                 <div>
-                  <p className="text-[#cdd6f4] font-medium">
+                  <p className="text-amber-900 font-medium text-lg">
                     {formData.imageFile
                       ? formData.imageFile.name
                       : "Click to upload image"}
                   </p>
-                  <p className="text-[#6c7086] text-sm">
+                  <p className="text-amber-600 text-sm mt-1">
                     PNG, JPG, GIF up to 10MB
                   </p>
                 </div>
@@ -262,7 +286,10 @@ function MintForm({
           )}
         </div>
         {errors.imageFile && (
-          <p className="text-[#f38ba8] text-sm mt-1">{errors.imageFile}</p>
+          <p className="text-red-600 text-sm mt-2 flex items-center gap-1">
+            <X className="w-4 h-4" />
+            {errors.imageFile}
+          </p>
         )}
       </div>
     </form>
@@ -276,35 +303,54 @@ export function MintSection({
   collectionInfo: CollectionInfo;
   id: string;
 }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleSuccess = () => {
+    setIsOpen(false);
+  };
+
   return (
-    <Dialog modal>
+    <Dialog modal open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button className="w-full bg-gradient-to-r from-[#cba6f7] to-[#f38ba8] hover:from-[#b4a0e8] hover:to-[#f27a9a] text-[#11111b] font-semibold py-3 text-lg disabled:opacity-50 disabled:cursor-not-allowed">
+        <Button className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-semibold py-4 text-lg rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl">
+          <Sparkles className="w-5 h-5 mr-2" />
           Mint
         </Button>
       </DialogTrigger>
-      <DialogContent className="bg-[#1e1e2e] min-w-max p-0">
+      <DialogContent className="bg-amber-50/20 backdrop-blur-md border border-amber-300/30 min-w-max p-0 rounded-2xl">
         {collectionInfo.isActive && (
-          <div className="bg-gradient-to-r from-[#cba6f7]/10 to-[#f38ba8]/10 border border-[#cba6f7]/20 rounded-lg p-6">
-            <div className="grid md:grid-cols-2 gap-6">
+          <div className="bg-gradient-to-r from-amber-100/20 to-orange-100/20 border border-amber-300/30 rounded-2xl p-8">
+            <div className="grid md:grid-cols-2 gap-8">
               <div>
-                <h3 className="text-2xl font-semibold text-[#cba6f7] mb-2">
-                  Mint Your NFT
-                </h3>
-                <p className="text-[#bac2de] mb-4">
-                  Create your unique NFT with custom traits and personality
-                </p>
-                <div className="mb-4">
-                  <div className="flex justify-between text-sm mb-2">
-                    <span className="text-[#a6adc8]">Minting Progress</span>
-                    <span className="text-[#cba6f7]">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                >
+                  <h3 className="text-3xl font-bold bg-gradient-to-r from-amber-900 to-orange-800 bg-clip-text text-transparent mb-4">
+                    Mint Your NFT
+                  </h3>
+                  <p className="text-amber-800 mb-6 text-lg leading-relaxed font-medium">
+                    Create your unique NFT with custom traits and personality
+                  </p>
+                </motion.div>
+
+                <motion.div 
+                  className="mb-6"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  <div className="flex justify-between text-sm mb-3">
+                    <span className="text-amber-700 font-medium">Minting Progress</span>
+                    <span className="text-amber-800 font-semibold">
                       {collectionInfo.totalSupply.toLocaleString()}/
                       {collectionInfo.maxSupply.toLocaleString()}
                     </span>
                   </div>
-                  <div className="w-full bg-[#45475a] rounded-full h-3">
+                  <div className="w-full bg-amber-200/30 rounded-full h-3 mb-2">
                     <div
-                      className="bg-gradient-to-r from-[#cba6f7] to-[#f38ba8] h-3 rounded-full transition-all duration-300"
+                      className="bg-gradient-to-r from-amber-500 to-orange-500 h-3 rounded-full transition-all duration-500"
                       style={{
                         width: `${
                           (collectionInfo.totalSupply /
@@ -314,7 +360,7 @@ export function MintSection({
                       }}
                     ></div>
                   </div>
-                  <p className="text-[#6c7086] text-sm mt-1">
+                  <p className="text-amber-600 text-sm">
                     {(
                       ((collectionInfo.maxSupply - collectionInfo.totalSupply) /
                         collectionInfo.maxSupply) *
@@ -322,25 +368,44 @@ export function MintSection({
                     ).toFixed(1)}
                     % remaining
                   </p>
-                </div>
-                <div className="bg-[#313244] rounded-lg p-4">
+                </motion.div>
+
+                <motion.div 
+                  className="bg-amber-100/30 backdrop-blur-md border border-amber-300/30 rounded-2xl p-6"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2 bg-amber-500/20 rounded-lg">
+                      <Coins className="w-5 h-5 text-amber-700" />
+                    </div>
+                    <span className="text-amber-900 font-medium">Pricing</span>
+                  </div>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-[#a6adc8]">Mint Price</span>
-                    <span className="text-2xl font-bold text-[#f9e2af]">
+                    <span className="text-amber-700">Mint Price</span>
+                    <span className="text-2xl font-bold text-amber-950">
                       {formatSUI(collectionInfo.mintPrice)} SUI
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-[#6c7086]">Gas Fee (estimated)</span>
-                    <span className="text-[#94e2d5]">~0.005 SUI</span>
+                    <span className="text-amber-600">Gas Fee (estimated)</span>
+                    <span className="text-amber-800 font-medium">~0.005 SUI</span>
                   </div>
-                </div>
+                </motion.div>
               </div>
 
-              <MintForm
-                collectionId={id}
-                mintPrice={collectionInfo.mintPrice}
-              />
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.4 }}
+              >
+                <MintForm
+                  collectionId={id}
+                  mintPrice={collectionInfo.mintPrice}
+                  onSuccess={handleSuccess}
+                />
+              </motion.div>
             </div>
           </div>
         )}

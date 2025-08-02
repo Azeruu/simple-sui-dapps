@@ -31,3 +31,20 @@ export function useGetUserNFT(collectionId?: string) {
 
   return [parsed, rest] as const;
 }
+
+// Hook khusus untuk mendapatkan dynamic fields dari NFT
+export function useGetNFTDynamicFields(nftId: string) {
+  const { data, ...rest } = useSuiClientQuery(
+    "getDynamicFields",
+    {
+      parentId: nftId,
+    },
+    {
+      enabled: !!nftId,
+      queryKey: ["getNFTDynamicFields", nftId],
+      refetchInterval: 10_000,
+    },
+  );
+
+  return [data, rest] as const;
+}
