@@ -1,8 +1,6 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { Badge } from './ui/badge';
 import { Card } from './ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
@@ -21,7 +19,6 @@ export function AddDynamicFieldForm({ nftId, nftName }: AddDynamicFieldFormProps
   const [fieldType, setFieldType] = useState<'string' | 'number' | 'boolean'>('string');
   const [customKey, setCustomKey] = useState('');
   const [customValue, setCustomValue] = useState('');
-  const [selectedPreset, setSelectedPreset] = useState<string>('');
 
   const packageId = useNetworkVariable('simpleArtNFT');
   const { 
@@ -31,7 +28,6 @@ export function AddDynamicFieldForm({ nftId, nftName }: AddDynamicFieldFormProps
     addRarityField,
     addLevelField,
     addPowerField,
-    addCustomAttribute,
     isLoading 
   } = useAddNFTDynamicFields();
 

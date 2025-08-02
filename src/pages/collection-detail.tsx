@@ -7,8 +7,7 @@ import {
   Eye,
   Home,
   Clock,
-  Sparkles,
-  PlusCircle, // <-- 1. Icon baru diimpor
+  Sparkles, // <-- 1. Icon baru diimpor
 } from "lucide-react";
 import { MintSection } from "../components/mint-section";
 import { NFTGrid } from "../components/nft-grid";
@@ -199,7 +198,7 @@ export function CollectionDetail() {
                   ? "text-green-600"
                   : "text-red-600",
               },
-            ].map((stat, index) => (
+            ].map((stat,_) => (
               <motion.div
                 key={stat.label}
                 className="group relative bg-gradient-to-br from-amber-100/80 to-orange-100/60 backdrop-blur-md border border-amber-300/40 rounded-2xl p-4 hover:from-amber-100/90 hover:to-orange-100/80 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1"
