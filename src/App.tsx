@@ -3,7 +3,7 @@ import { useGetCollectionInfo } from "./hooks/use-get-collection-info";
 import { useNetworkVariable } from "./networkConfig";
 import { useState } from "react";
 import { Navbar } from "./components/navbar";
-import { BrowserRouter as Router, Routes, Route, useLocation} from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { HomePage } from './pages/home-pages';
 import { CollectionDetail } from './pages/collection-detail';
 import { AnimatePresence } from 'framer-motion';
@@ -15,12 +15,12 @@ export function App() {
   const collections = useNetworkVariable("collectionId");
 
   // Membuat daftar nama dan ID untuk dropdown dan state
-  const collectionNames = Object.keys(collections);
+  // const collectionNames = Object.keys(collections);
   const collectionIds = Object.values(collections);
   // const collectionCount = Object.keys(collections).length;
 
   // Menginisialisasi state dengan ID koleksi pertama dari daftar. Ini cara yang aman.
-  const [selectedCollectionId, setSelectedCollectionId] = useState(
+  const [selectedCollectionId] = useState(
     collectionIds[0],
   );
 

@@ -1,21 +1,20 @@
 import { useGetCollectionInfo } from "../hooks/use-get-collection-info";
 import { Badge } from "@/components/ui/badge";
-import { TrendingUp, Coins, Users, Zap, Eye, ChevronDown } from "lucide-react";
+import { TrendingUp, Users, Zap, Eye, ChevronDown } from "lucide-react";
 import { useNetworkVariable } from "../networkConfig";
 import { MintSection } from "../components/mint-section";
 import { NFTGrid } from "../components/nft-grid";
 import { formatSUI } from "../lib/utils";
 import React, { useState } from "react";
-import { Navbar } from "../components/navbar";
 
 export default function nftPage() {
     // Mengambil seluruh objek koleksi dari networkConfig
     const collections = useNetworkVariable("collectionId");
 
     // Membuat daftar nama dan ID untuk dropdown dan state
-    const collectionNames = Object.keys(collections);
+    // const collectionNames = Object.keys(collections);
     const collectionIds = Object.values(collections);
-    const collectionCount = Object.keys(collections).length;
+    // const collectionCount = Object.keys(collections).length;
 
     // Menginisialisasi state dengan ID koleksi pertama dari daftar. Ini cara yang aman.
     const [selectedCollectionId, setSelectedCollectionId] = useState(

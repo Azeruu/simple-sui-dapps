@@ -1,6 +1,5 @@
 // src/pages/HomePage.tsx
 
-import React from 'react';
 import { useNetworkVariable } from '../networkConfig';
 import { CollectionCard } from '../components/collection-card';
 import { motion } from 'framer-motion'; // Import motion
@@ -21,7 +20,7 @@ export function HomePage() {
                 <p className="text-blue-300 text-lg">Select from our exclusive NFT collections</p>
             </div>
             <div className="grid md:grid-cols-2 gap-8 px-4 sm:px-10 md:px-20 py-5 -mt-10">
-                {Object.entries(collections).map(([name, id]) => (
+                {Object.entries(collections).map(([_,id]) => (
                     <CollectionCard key={id} collectionId={id} />
                 ))}
             </div>

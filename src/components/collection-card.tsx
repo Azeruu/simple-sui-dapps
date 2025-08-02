@@ -1,6 +1,4 @@
 // src/components/CollectionCard.tsx
-
-import React from "react";
 import { Link } from "react-router-dom";
 import { useGetCollectionInfo } from "../hooks/use-get-collection-info";
 import { formatSUI } from "../lib/utils";

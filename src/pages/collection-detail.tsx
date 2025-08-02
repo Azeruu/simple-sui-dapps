@@ -1,14 +1,11 @@
-import { ConnectButton } from "@mysten/dapp-kit";
 import { useGetCollectionInfo } from "../hooks/use-get-collection-info";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, Users, Zap, Eye, Home } from "lucide-react";
-import { useNetworkVariable } from "../networkConfig";
 import { MintSection } from "../components/mint-section";
 import { NFTGrid } from "../components/nft-grid";
 import { formatSUI } from "../lib/utils";
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 export function CollectionDetail() {
     // Mendapatkan ID dari URL params
